@@ -106,7 +106,7 @@ This project is a strong reference implementation for a modern e-commerce storef
 | **Data Storage** | In-memory (`DataStore`) — swappable for MySQL/PostgreSQL/MongoDB |
 | **Build Tools** | Maven (backend), npm (frontend) |
 | **Linting** | ESLint |
-| **Hosting** | Vercel (frontend) |
+| **Hosting** | Vercel (frontend) · Render (backend) |
 
 ---
 
@@ -279,11 +279,11 @@ The frontend reads the backend's base URL from a Vite environment variable, defi
 # Local development:
 VITE_API_URL=http://localhost:8080
 
-# Production (after deploying the backend, e.g. to Render):
-# VITE_API_URL=https://your-backend-service.onrender.com
+# Production (backend deployed on Render):
+# VITE_API_URL=https://your-render-service.onrender.com
 ```
 
-If `VITE_API_URL` is not set, the frontend falls back to `http://localhost:8080` by default (see `src/services/api.js`).
+If `VITE_API_URL` is not set, the frontend falls back to `http://localhost:8080` by default (see `src/services/api.js`). The live demo's frontend on Vercel is configured with `VITE_API_URL` pointing at the Render-hosted backend.
 
 ---
 
@@ -422,15 +422,27 @@ Stores account credentials, with passwords hashed via **BCrypt** before storage 
 ## ☁️ Deployment
 
 - **Frontend:** Deployed on [Vercel](https://vercel.com) → [Live Demo](https://e-commerce-frontend-alpha-lake.vercel.app/)
-- **Backend:** Can be deployed to any Java-friendly host such as Render, Railway, Fly.io, or AWS Elastic Beanstalk. Build a production JAR with:
+- **Backend:** Deployed on [Render](https://render.com) as a web service running the Spring Boot JAR.
 
-```bash
-cd "E-Commerce Web Application Backend"
-./mvnw clean package
-java -jar target/backend.jar
-```
+### Deploying the backend to Render
 
-- After deploying the backend, set `VITE_API_URL` in your Vercel project's environment variables to the deployed backend's URL, and update `CorsConfig.java` on the backend to allow your deployed frontend's origin.
+1. Push the backend to GitHub (already done — this repo).
+2. Create a new **Web Service** on Render and point it at this repository, with the root directory set to `Full-Stack E-Commerce Web Application/E-Commerce Web Application Backend`.
+3. Set the build and start commands:
+
+   ```bash
+   # Build command
+   ./mvnw clean package -DskipTests
+
+   # Start command
+   java -jar target/backend.jar
+   ```
+
+4. Render assigns a public URL such as `https://your-service-name.onrender.com` — copy it.
+5. Update `CorsConfig.java` on the backend to allow your deployed frontend's origin (e.g. `https://e-commerce-frontend-alpha-lake.vercel.app`).
+6. In your Vercel project settings, set the `VITE_API_URL` environment variable to the Render URL from step 4, then redeploy the frontend.
+
+> **Note:** Render's free tier spins down idle services — the first request after inactivity may take a few extra seconds while the backend cold-starts.
 
 ---
 
@@ -451,7 +463,8 @@ java -jar target/backend.jar
 
 | Issue | Likely Cause | Fix |
 |-------|--------------|-----|
-| "Backend was not connected" error in the UI | Backend isn't running or `VITE_API_URL` is misconfigured | Start the Spring Boot backend and confirm `.env` points to the correct URL |
+| "Backend was not connected" error in the UI | Backend isn't running or `VITE_API_URL` is misconfigured | Start the Spring Boot backend locally, or confirm `.env`/Vercel env points to the correct Render URL |
+| Live demo feels slow on first load | Render free-tier services spin down when idle | Wait a few seconds for the cold start to finish, then retry |
 | CORS errors in the browser console | Frontend origin not allowed by backend | Update `CorsConfig.java` to include your frontend's URL |
 | `401 Unauthorized` on cart/wishlist/orders | Token missing or expired | Check `localStorage` for the `authToken` key; log in again |
 | `mvnw: Permission denied` (macOS/Linux) | Wrapper script isn't executable | Run `chmod +x mvnw` |
