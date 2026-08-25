@@ -1,0 +1,133 @@
+.navbar {
+  position: relative;
+  z-index: 100000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 50px;
+  background: #111;        
+  color: white;            
+  overflow: visible;
+  width: 100%;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: row;
+  gap: 25px;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  cursor: pointer;
+  font-size: 16px;
+  color: white;
+  transition: 0.3s;
+}
+
+.nav-links li:hover {
+  color: orange;
+}
+
+.account {
+  position: relative;
+  cursor: pointer;
+}
+
+.account-icon {
+  font-size: 22px;
+  padding: 5px;
+}
+
+.account-box {
+  position: fixed;
+  top: 60px;
+  right: 10px;
+  background: white;
+  color: black;
+  padding: 12px;
+  border-radius: 10px;
+  width: 180px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  z-index: 999999;
+}
+
+.username {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.account-box button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 5px;
+  background: black;
+  color: white;
+  cursor: pointer;
+}
+
+.account-box button:hover {
+  background: #333;
+}
+
+.slider {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 10px;
+  }
+
+  .logo {
+    font-size: 14px;
+  }
+
+  .nav-links {
+    gap: 10px;
+  }
+
+  .nav-links li {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .account-icon {
+    font-size: 20px;
+  }
+
+  .account-box {
+    position: fixed;
+    top: 55px;
+    right: 10px;
+    width: 160px;
+    z-index: 999999;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .navbar {
+    padding: 10px 20px;
+  }
+
+  .nav-links {
+    gap: 15px;
+  }
+
+  .account-box {
+    width: 170px;
+  }
+}
